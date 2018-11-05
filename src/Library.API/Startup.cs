@@ -34,7 +34,10 @@ namespace Library.API
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(setupAction =>
+			{
+				setupAction.ReturnHttpNotAcceptable = true;
+			});
 
             // register the DbContext on the container, getting the connection string from
             // appSettings (note: use this during development; in a production environment,
@@ -58,7 +61,14 @@ namespace Library.API
             }
             else
             {
-                app.UseExceptionHandler();
+				app.UseExceptionHandler(appBuilder => {
+					appBuilder.Run(async context =>
+							{
+								context.Response.StatusCode = 500;
+								await context.Response.WriteAsync("Unexpected Exception occcured. Please contact Service Desk");
+							}
+					);
+				});
             }
 
 			AutoMapper.Mapper.Initialize(cfg =>
@@ -68,6 +78,8 @@ namespace Library.API
 					$"{src.FirstName} {src.LastName}"))
 					.ForMember(dest => dest.Age, opt => opt.MapFrom(src =>
 					src.DateOfBirth.GetCurrentAge()));
+
+				cfg.CreateMap<Entities.Book, Models.BooksDTO>();
 			});
 
             libraryContext.EnsureSeedDataForContext();

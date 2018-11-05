@@ -22,6 +22,8 @@ namespace Library.API.Controllers
 		[HttpGet()]
 		public IActionResult GetAuthors()
 		{
+			throw new Exception("Random Exception thrown");
+
 			var authorsFromRepo = _libraryRepository.GetAuthors();
 
 			var authors = AutoMapper.Mapper.Map<IEnumerable<AuthorDTO>>(authorsFromRepo);
