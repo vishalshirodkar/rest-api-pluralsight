@@ -80,6 +80,8 @@ namespace Library.API
 					src.DateOfBirth.GetCurrentAge()));
 
 				cfg.CreateMap<Entities.Book, Models.BooksDTO>();
+				cfg.CreateMap<Models.AuthorForCreationDTO, Entities.Author>();
+				cfg.CreateMap<Models.BookForCreationDto, Entities.Book>();
 			});
 
             libraryContext.EnsureSeedDataForContext();

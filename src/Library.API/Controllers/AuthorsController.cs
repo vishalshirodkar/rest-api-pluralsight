@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Library.API.Helpers;
+using Library.API.Entities;
 
 namespace Library.API.Controllers
 {
@@ -22,15 +23,13 @@ namespace Library.API.Controllers
 		[HttpGet()]
 		public IActionResult GetAuthors()
 		{
-			throw new Exception("Random Exception thrown");
-
 			var authorsFromRepo = _libraryRepository.GetAuthors();
 
 			var authors = AutoMapper.Mapper.Map<IEnumerable<AuthorDTO>>(authorsFromRepo);
 			return Ok(authors);
 		}
 
-		[HttpGet("{id}")]
+		[HttpGet("{id}", Name = "GetAuthor")]
 		public IActionResult GetAuthor(Guid id)
 		{
 			var authorFromRepo = _libraryRepository.GetAuthor(id);
@@ -42,6 +41,29 @@ namespace Library.API.Controllers
 
 			var authors = AutoMapper.Mapper.Map<AuthorDTO>(authorFromRepo);
 			return Ok(authors);
+		}
+
+		[HttpPatch]
+		public IActionResult CreateAuthor([FromBody] AuthorForCreationDTO author)
+		{
+			if(author == null)
+			{
+				return BadRequest();
+			}
+
+			var authorObj = AutoMapper.Mapper.Map<Author>(author);
+
+			_libraryRepository.AddAuthor(authorObj);
+
+			if (!_libraryRepository.Save())
+			{
+				throw new Exception("Unable to save author details");
+			}
+
+			var authorDTO = AutoMapper.Mapper.Map<AuthorDTO>(authorObj);
+
+			return CreatedAtRoute("GetAuthor", new { id = authorDTO.Id }, authorDTO);
+
 		}
 	}
 }
