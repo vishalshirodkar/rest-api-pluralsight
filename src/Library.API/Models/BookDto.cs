@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Library.API.Models
 {
-    public class AuthorDto
+    public class BookDto : LinkedResourceBaseDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public string Genre { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public Guid AuthorId { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace Library.API.Controllers
 
         [HttpPost]
         public IActionResult CreateAuthorCollection(
-            [FromBody] IEnumerable<AuthorForCreationDTO> authorCollection)
+            [FromBody] IEnumerable<AuthorForCreationDto> authorCollection)
         {
             if (authorCollection == null)
             {
@@ -42,7 +42,7 @@ namespace Library.API.Controllers
                 throw new Exception("Creating an author collection failed on save.");
             }
 
-            var authorCollectionToReturn = Mapper.Map<IEnumerable<AuthorDTO>>(authorEntities);
+            var authorCollectionToReturn = Mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
             var idsAsString = string.Join(",",
                 authorCollectionToReturn.Select(a => a.Id));
 
@@ -53,7 +53,8 @@ namespace Library.API.Controllers
         }
 
         // (key1,key2, ...)
-		[HttpGet("({ids})", Name="GetAuthorCollection")]
+
+        [HttpGet("({ids})", Name="GetAuthorCollection")]
         public IActionResult GetAuthorCollection(
             [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {           
@@ -69,7 +70,7 @@ namespace Library.API.Controllers
                 return NotFound();
             }
 
-            var authorsToReturn = Mapper.Map<IEnumerable<AuthorDTO>>(authorEntities);
+            var authorsToReturn = Mapper.Map<IEnumerable<AuthorDto>>(authorEntities);
             return Ok(authorsToReturn);
         }
     }
